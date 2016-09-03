@@ -49,7 +49,11 @@ public class OctopusGremlinShell
 
 	public void initShell()
 	{
-		this.shell = new GroovyShell(new OctopusCompilerConfiguration());
+	    OctopusCompilerConfiguration cfg = new OctopusCompilerConfiguration();
+        System.out.println("CompilerConfiguration: "+cfg);
+		System.out.println("CompilerConfiguration recompile: "+cfg.getRecompileGroovySource());
+		this.shell = new GroovyShell(cfg);
+		// now clean meta class
 		openDatabaseConnection(projectName);
 		octopusSugarLoad();
 		loadStandardQueryLibrary();
@@ -68,8 +72,9 @@ public class OctopusGremlinShell
 		this.shell.setVariable("sessionSteps", new HashMap<String, Closure>());
 	}
 
-	private void loadStandardQueryLibrary()
+	public void loadStandardQueryLibrary()
 	{
+		System.out.println("Loading standard library...");
 		try
 		{
 			Path languagesDir = OctopusEnvironment.LANGUAGES_DIR;
@@ -78,6 +83,7 @@ public class OctopusGremlinShell
 		{
 			e.printStackTrace();
 		}
+		System.out.println("...done.");
 	}
 
 	private void loadRecursively(String languagesDir) throws IOException

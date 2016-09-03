@@ -39,7 +39,22 @@ public class OctopusGremlinShell
 
 	private void octopusSugarLoad()
 	{
-		String cmd = "GremlinLoader.load();";
+		String cmd = "";
+		// String cmd = "GroovySystem.metaClassRegistry.removeMetaClass(GraphTraversal); println GraphTraversal.metaClass.dump();";
+		// String cmd = "GraphTraversal.metaClass=null; println GraphTraversal.metaClass.dump();";
+		// String cmd = "MetaRegistryUtil.clearRegistry([GraphTraversal]);";
+		// String cmd = "println GroovySystem.metaClassRegistry.dump();";
+		cmd = "GroovySystem.metaClassRegistry.getMetaClass(GraphTraversal).getMethods().each{ println it.name };";
+		execute(cmd);
+		cmd = "GroovySystem.metaClassRegistry.removeMetaClass(GraphTraversal);";
+		execute(cmd);
+		cmd = "println '---> after cleanup:';";
+		execute(cmd);
+		cmd = "GroovySystem.metaClassRegistry.getMetaClass(GraphTraversal).getMethods().each{ println it.name };";
+		execute(cmd);
+		// cmd = "println GroovySystem.metaClassRegistry.each{ it + '\\n' };";
+		// execute(cmd);
+		cmd = "GremlinLoader.load();";
 		execute(cmd);
 
 		// This is the code responsible for the execution of session steps

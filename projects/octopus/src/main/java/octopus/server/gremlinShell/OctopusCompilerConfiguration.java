@@ -17,6 +17,10 @@ public class OctopusCompilerConfiguration extends CompilerConfiguration
 	{
 		this.setScriptBaseClass(OctopusScriptBase.class.getName());
 		this.addCompilationCustomizers(new OctopusImportCustomizer());
+		this.setRecompileGroovySource(true);
+		this.setMinimumRecompilationInterval(0);
+		this.setVerbose(true);
+		this.setDebug(true);
 	}
 
 }

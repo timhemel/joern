@@ -12,6 +12,8 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.structure.Graph;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.HashMap;
 
@@ -120,7 +122,10 @@ public class OctopusGremlinShell
 			return shell.evaluate(code);
 		} catch (Exception ex)
 		{
-			return String.format("[%s] %s\n%s", ex.getClass().getSimpleName(), ex.getMessage());
+			StringWriter sw = new StringWriter();
+			ex.printStackTrace(new PrintWriter(sw));
+			String ex_string = sw.toString();
+			return String.format("[%s] %s\n%s", ex.getClass().getSimpleName(), ex.getMessage(), ex_string);
 		}
 	}
 

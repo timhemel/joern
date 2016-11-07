@@ -66,9 +66,9 @@ class ProgramGraph(JoernTool):
         f = open(self.args.plot_config, "r")
         self.plot_configuration.parse(f)
 
-        labels = self._getLabels()
+        labels,labels_exclude = self._getLabels()
         nodes = self._getNodes(int(line), labels)
-        edges = self._getEdges(int(line), labels)
+        edges = self._getEdges(int(line), labels, labels_exclude)
 
         G = pgv.AGraph(directed=True, strict=False)
         self._addNodes(G, nodes)
@@ -111,6 +111,7 @@ class ProgramGraph(JoernTool):
 
     def _getLabels(self):
         labels = ["FLOWS_TO", "REACHES", "CONTROLS", "DOM", "POST_DOM", "USE", "DEF", "IS_AST_PARENT"]
+        labels_exclude = []
         if self.args.show_all:
             return labels
 
@@ -129,7 +130,12 @@ class ProgramGraph(JoernTool):
         if not self.args.show_ast:
             labels.remove("IS_AST_PARENT")
 
-        return labels
+        if self.args.show_data_dependences or self.args.show_data_flow:
+            labels.append("FLOWS_TO")
+            if not self.args.show_control_flow:
+                labels_exclude.append("FLOWS_TO")
+
+        return labels,labels_exclude
 
     def _getStartNode(self, functionId):
         if self.args.id_property:
@@ -145,10 +151,13 @@ class ProgramGraph(JoernTool):
             """.format(self._getStartNode(functionId), ','.join(map(lambda x: "'{}'".format(x), labels)))
         return self._runGremlinQuery(query)
 
-    def _getEdges(self, functionId, labels):
+    def _getEdges(self, functionId, labels, labels_exclude):
+        filter_exclude = ""
+        if labels_exclude:
+            filter_exclude = ".where(label().is(P.without({})))".format(",".join([ "'{}'".format(x) for x in labels_exclude]))
         query = """
-            {}.repeat(outE({}).subgraph('sg').inV().simplePath()).cap('sg').next().traversal().E()
-            """.format(self._getStartNode(functionId), ','.join(map(lambda x: "'{}'".format(x), labels)))
+            {}.repeat(outE({}).subgraph('sg').inV().simplePath()).cap('sg').next().traversal().E(){}
+            """.format(self._getStartNode(functionId), ','.join(map(lambda x: "'{}'".format(x), labels)),filter_exclude)
         return self._runGremlinQuery(query)
 
 

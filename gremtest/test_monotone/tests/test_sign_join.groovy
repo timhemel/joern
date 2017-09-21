@@ -1,42 +1,5 @@
 !include("gremtest.groovy")
-
-class SignAnalysis {
-	static final int sb = 0;
-	static final int sn = 1;
-	static final int sz = 2;
-	static final int sp = 3;
-	static final int szn = 4;
-	static final int szp = 5;
-	static final int snp = 6;
-	static final int st = 7;
-
-	static final sign_join_table = [
-		[ sb, sn, sz, sp, szn, szp, snp, st ],
-		[ sn, sn, szn, snp, szn, st, snp, st ],
-		[ sz, szn, sz, szp, szn, szp, st, st ],
-		[ sp, snp, szp, sp, st, szp, snp, st ],
-		[ szn, szn, szn, st, szn, st, st, st ],
-		[ szp, st, szp, szp, st, szp, st, st ],
-		[ snp, snp, st, snp, st, st, snp, st ],
-		[ st, st, st, st, st, st, st, st ]
-	] 
-
-	static join(v1,v2) {
-		return sign_join_table[v1][v2]
-	}
-
-	static joinInfos(infos) {
-		def ret = [:];
-		for(info in infos) {
-			for(var in info.iterator()) {
-				def v = join(ret.get(var.key,sb),var.value);
-				ret[var.key] = v
-			}
-		}
-		return ret;
-	}
-}
-
+!include("test_monotone/tests/analysis.groovy")
 
 class MFPAlgorithm {
 	MFPAlgorithm(nodes, analysis) {
@@ -53,11 +16,21 @@ class MFPAlgorithm {
 }
 
 test("sign_join", {
-	assertEquals(SignAnalysis.join(SignAnalysis.szp,SignAnalysis.sb), SignAnalysis.szp )
+	a = new SignAnalysis();
+	assertEquals(a.join(a.szp,a.sb), a.szp )
+	assertEquals(a.join(a.sb,a.szp), a.szp )
+})
+
+test("sign_join_collection", {
+	a = new SignAnalysis();
+	l = [ a.sz, a.sp, a.sb ];
+	assertEquals(a.joinCollection(l), a.szp)
 })
 
 
 test("sign join multiple variables", {
+
+
 	p1 = [ x: SignAnalysis.sb, y: SignAnalysis.snp, z: SignAnalysis.st ]
 	p2 = [ x: SignAnalysis.sb, y: SignAnalysis.sp, z: SignAnalysis.sn ]
 	p3 = [ x: SignAnalysis.sb, y: SignAnalysis.sz, z: SignAnalysis.sb ]
@@ -65,7 +38,10 @@ test("sign join multiple variables", {
 
 	infos = [ p1,p2,p3 ]
 
-	assertEquals(SignAnalysis.joinInfos(infos), expected )
+	sa = new SignAnalysis();
+	a = new MappingAnalysis(sa);
+
+	assertEquals(a.joinCollection(infos), expected )
 })
 
 test("sign join no variables", {
@@ -74,7 +50,9 @@ test("sign join no variables", {
 
 	infos = [ p1,p1,p1 ]
 
-	assertEquals(SignAnalysis.joinInfos(infos), expected )
+	sa = new SignAnalysis();
+	a = new MappingAnalysis(sa);
+	assertEquals(a.joinCollection(infos), expected )
 })
 
 test("mfp init", {

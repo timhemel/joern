@@ -14,7 +14,7 @@ class BaseAnalysis {
 		values.inject( bottom() ) { result, v -> join(result,v) }
 	}
 
-	public lt(v1,v2) {
+	public leq(v1,v2) {
 		println join(v1,v2)
 		return join(v1,v2) == v2;
 	}

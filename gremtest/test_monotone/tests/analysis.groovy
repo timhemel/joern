@@ -6,12 +6,17 @@ class BaseAnalysis {
 	public top() { return 0; }
 
 	public join(v1,v2) {
-		println "BaseAnalysis.join(${v1},${v2}) = 0"
+		// println "BaseAnalysis.join(${v1},${v2}) = 0"
 		return 0
 	}
 
 	public joinCollection(values){
 		values.inject( bottom() ) { result, v -> join(result,v) }
+	}
+
+	public lt(v1,v2) {
+		println join(v1,v2)
+		return join(v1,v2) == v2;
 	}
 }
 
@@ -40,8 +45,8 @@ class SignAnalysis extends BaseAnalysis {
 	public top() { return st; }
 
 	public join(v1,v2) {
-		println "SignAnalysis::join(${v1},${v2})"
-		println sign_join_table[v1][v2]
+		// println "SignAnalysis::join(${v1},${v2})"
+		// println sign_join_table[v1][v2]
 		return sign_join_table[v1][v2]
 	}
 
@@ -58,30 +63,15 @@ public class MappingAnalysis extends BaseAnalysis {
 	public bottom() { return [ : ] }
 
 	public join(map1, map2) {
-		println "MappingAnalysis.join(${map1},${map2})"
+		// println "MappingAnalysis.join(${map1},${map2})"
 		def ret = map1.clone()
 		for ( mapitem in map2.iterator()) {
 			def v = analysis.join(ret.get(mapitem.key,analysis.bottom()),mapitem.value);
 			ret[mapitem.key] = v
 		}
-		println ret
+		// println ret
 		return ret
 	}
-
-/*
-	static joinInfos(infos) {
-		def ret = [:];
-		for(info in infos) {
-			println info
-			for(var in info.iterator()) {
-				def v = A.join(ret.get(var.key,A.sb),var.value);
-				ret[var.key] = v
-			}
-		}
-		println ret;
-		return ret;
-	}
-*/
 
 }
 

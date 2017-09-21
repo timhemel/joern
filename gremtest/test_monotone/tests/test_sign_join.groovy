@@ -2,16 +2,36 @@
 !include("test_monotone/tests/analysis.groovy")
 
 class MFPAlgorithm {
-	MFPAlgorithm(nodes, analysis) {
-		println nodes
+	BaseAnalysis analysis
+	def edges;
+	def results;
+	def worklist;
+
+	MFPAlgorithm(edges, BaseAnalysis a) {
+		this.analysis = a
+		this.edges = edges;
+		this.results = [:]
+		this.worklist = [];
 	}
 
 	void init() {
-		println 1
+		this.edges.each{ edge ->
+			this.results[ edge.inVertex().id()] = analysis.bottom()
+			this.results[ edge.outVertex().id()] = analysis.bottom()
+		}
+		// println "init = ${this.results}"
+		this.worklist = this.edges;
+	}
+
+	def run() {
+		while (!this.worklist.isEmpty()) {
+			edge = this.worklist.pop()
+			(n1,n2) = getEdgeNodes(edge)
+		}
 	}
 
 	def getValue(node) {
-		return 1;
+		return this.results[node.id()];
 	}
 }
 
@@ -27,10 +47,13 @@ test("sign_join_collection", {
 	assertEquals(a.joinCollection(l), a.szp)
 })
 
+test("sign less than order", {
+	a = new SignAnalysis();
+	assert  a.lt(a.sz,a.szp) ;
+})
+
 
 test("sign join multiple variables", {
-
-
 	p1 = [ x: SignAnalysis.sb, y: SignAnalysis.snp, z: SignAnalysis.st ]
 	p2 = [ x: SignAnalysis.sb, y: SignAnalysis.sp, z: SignAnalysis.sn ]
 	p3 = [ x: SignAnalysis.sb, y: SignAnalysis.sz, z: SignAnalysis.sb ]
@@ -60,11 +83,15 @@ test("mfp init", {
 	cfgNodes = g.V().has('type','Function')
 		.has('code','sign_alg2')
 		.functionToStatements().collect();
-	println cfgNodes
-	def mfp = new MFPAlgorithm(cfgNodes, SignAnalysis);
+	cfgEdges = g.V().has('type','Function')
+		.has('code','sign_alg2')
+		.functionToStatements().outE('FLOWS_TO').collect();
+	sa = new SignAnalysis();
+	a = new MappingAnalysis(sa);
+	def mfp = new MFPAlgorithm(cfgEdges, a);
 	mfp.init()
 	assertEquals(mfp.getValue(cfgNodes[2]), [:])
-	
+	assertEquals(mfp.worklist, cfgEdges)	
 })
 
 

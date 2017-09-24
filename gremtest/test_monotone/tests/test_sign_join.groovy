@@ -6,6 +6,7 @@ class MFPAlgorithm {
 	def edges;
 	def nodes;
 	def results;
+	def xferfunc;
 	def worklist;
 	def graph;
 
@@ -15,6 +16,7 @@ class MFPAlgorithm {
 		this.analysis = a
 		this.nodes = [:];
 		this.results = [:]
+		this.xferfunc = [:]
 		this.worklist = [];
 	}
 
@@ -27,6 +29,9 @@ class MFPAlgorithm {
 		}
 		// println "init = ${this.results}"
 		this.worklist = this.edges;
+		this.nodes.values().each{ node ->
+			this.xferfunc[ node.id() ] = XferFuncFactory.create(node);
+		}
 	}
 
 	def run() {
@@ -52,14 +57,9 @@ class MFPAlgorithm {
 
 	def trans(nodeId,value) {
 		def node = nodes[nodeId]
-		println "trans(${nodeId},"
-		println "    ${node.value('code')},"
-		println "    ${node.value('type')})"
-		def result = this.graph.V(node).
-			choose(values('type')).
-				option('CFGEntryNode', __.constant(value)).
-				option(Pick.none, __.constant(999)).
-			next()
+		println "trans(${nodeId}[${node.value('code')}:${node.value('type')}], $value)"
+		println this.xferfunc[nodeId]
+		def result = this.xferfunc[nodeId].eval(value)
 		println "result=$result"
 		return result
 	}
@@ -139,17 +139,29 @@ test("mfp trans", {
 	a = new MappingAnalysis(sa);
 	def mfp = new MFPAlgorithm(g,cfgEdges, a);
 	mfp.init()
-	// test CFGEntryNode
 	cfgNodes.each{ println it.value('type') }
+	// test CFGEntryNode
 	cfgEntryNode = cfgNodes.find{ it.value('type') == 'CFGEntryNode' }
 	println "cfgEntryNode: ${cfgEntryNode.value('type')}"
 	println cfgEntryNode.value('type')
 	assertEquals(mfp.trans(cfgEntryNode.id(), a.bottom()), a.bottom())
 	// test CFGExitNode
+	cfgExitNode = cfgNodes.find{ it.value('type') == 'CFGExitNode' }
+	assertEquals(mfp.trans(cfgExitNode.id(), a.bottom()), a.bottom())
 	// test Condition
+	conditionNode = cfgNodes.find{ it.value('type') == 'Condition' }
+	assertEquals(mfp.trans(conditionNode.id(), a.bottom()), a.bottom())
 	// test IdentifierDeclStatement => AssignmentExpression or not
+	identifierNode = cfgNodes.find{ it.value('code') == 'int a ;' }
+	assertEquals(mfp.trans(identifierNode.id(), a.bottom()), ['a':sa.top()])
 	// test ExpressionStatement => AssignmentExpression
-	n = cfgNodes[2]
+	identifierNode = cfgNodes.find{ it.value('code') == 'int b , c = 2 , d ;' }
+	assertEquals(mfp.trans(identifierNode.id(), a.bottom()), ['b':sa.top(),'c':sa.sp,'d':sa.top()])
+	incrementnode = cfgNodes.find{ it.value('code') == 'y = y + 1' }
+	assertEquals(mfp.trans(incrementnode.id(), ['y':sa.sn] ), ['y':sa.top()])
+	// n = cfgNodes[7]
+	cfgNodes.eachWithIndex{ v, i -> println "$i: ${v.value('code')}" }
+	n = cfgNodes[8]
 	println "mfp trans, node = $n"
 	assertEquals(mfp.trans(n.id(), sa.sb), [:])
 })

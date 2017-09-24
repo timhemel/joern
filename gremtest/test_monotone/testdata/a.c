@@ -18,6 +18,8 @@ void rd_alg1() {
 }
 
 void sign_alg2() {
+	int a;
+	int b,c=2,d;
 	int x = 0;
 	int y = -9;
 	int z = 12;

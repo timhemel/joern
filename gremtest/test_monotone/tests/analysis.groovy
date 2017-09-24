@@ -106,6 +106,17 @@ class SignAnalysisAbsFuncVariable extends SignAnalysisAbsFuncBase {
 
 class SignAnalysisAbsFuncBinaryPlus extends SignAnalysisAbsFuncBase {
 	def operand1, operand2;
+	static sign_xfer_table = [
+		[ SignAnalysis.sb, SignAnalysis.sn, SignAnalysis.sz, SignAnalysis.sp, SignAnalysis.szn, SignAnalysis.szp, SignAnalysis.snp, SignAnalysis.st ],
+		[ SignAnalysis.sn, SignAnalysis.sn, SignAnalysis.sn, SignAnalysis.st, SignAnalysis.sn, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ],
+		[ SignAnalysis.sz, SignAnalysis.sn, SignAnalysis.sz, SignAnalysis.sp, SignAnalysis.szn, SignAnalysis.szp, SignAnalysis.snp, SignAnalysis.st ],
+		[ SignAnalysis.sp, SignAnalysis.st, SignAnalysis.sp, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.st ],
+		[ SignAnalysis.szn, SignAnalysis.sn, SignAnalysis.szn, SignAnalysis.st, SignAnalysis.szn, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ],
+		[ SignAnalysis.szp, SignAnalysis.st, SignAnalysis.szp, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.szp, SignAnalysis.st, SignAnalysis.st ],
+		[ SignAnalysis.snp, SignAnalysis.st, SignAnalysis.snp, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.snp, SignAnalysis.st ],
+		[ SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ]
+	] 
+
 	SignAnalysisAbsFuncBinaryPlus(op1, op2) {
 		operand1 = op1;
 		operand2 = op2;
@@ -114,8 +125,7 @@ class SignAnalysisAbsFuncBinaryPlus extends SignAnalysisAbsFuncBase {
 		println "BinaryPlus::eval($operand1,$operand2)"
 		def r1 = operand1.eval(var_context)
 		def r2 = operand2.eval(var_context)
-		// TODO lookup result in transfer function table
-		return r1
+		return sign_xfer_table[r1][r2]
 	}
 }
 

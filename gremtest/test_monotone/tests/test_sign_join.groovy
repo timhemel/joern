@@ -159,11 +159,8 @@ test("mfp trans", {
 	assertEquals(mfp.trans(identifierNode.id(), a.bottom()), ['b':sa.top(),'c':sa.sp,'d':sa.top()])
 	incrementnode = cfgNodes.find{ it.value('code') == 'y = y + 1' }
 	assertEquals(mfp.trans(incrementnode.id(), ['y':sa.sn] ), ['y':sa.top()])
-	// n = cfgNodes[7]
-	cfgNodes.eachWithIndex{ v, i -> println "$i: ${v.value('code')}" }
-	n = cfgNodes[8]
-	println "mfp trans, node = $n"
-	assertEquals(mfp.trans(n.id(), sa.sb), [:])
+	multnode = cfgNodes.find{ it.value('code') == 'z = y * x' }
+	assertEquals(mfp.trans(multnode.id(), ['x':sa.sz,'y':sa.sn,'z':sa.sp] ), ['x':sa.sz,'y':sa.sn,'z':sa.sz])
 })
 
 /*

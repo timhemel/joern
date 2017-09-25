@@ -107,14 +107,14 @@ class SignAnalysisAbsFuncVariable extends SignAnalysisAbsFuncBase {
 class SignAnalysisAbsFuncBinaryPlus extends SignAnalysisAbsFuncBase {
 	def operand1, operand2;
 	static sign_xfer_table = [
+		[ SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb ],
+		[ SignAnalysis.sb, SignAnalysis.sn, SignAnalysis.sn, SignAnalysis.st, SignAnalysis.sn, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ],
 		[ SignAnalysis.sb, SignAnalysis.sn, SignAnalysis.sz, SignAnalysis.sp, SignAnalysis.szn, SignAnalysis.szp, SignAnalysis.snp, SignAnalysis.st ],
-		[ SignAnalysis.sn, SignAnalysis.sn, SignAnalysis.sn, SignAnalysis.st, SignAnalysis.sn, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ],
-		[ SignAnalysis.sz, SignAnalysis.sn, SignAnalysis.sz, SignAnalysis.sp, SignAnalysis.szn, SignAnalysis.szp, SignAnalysis.snp, SignAnalysis.st ],
-		[ SignAnalysis.sp, SignAnalysis.st, SignAnalysis.sp, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.st ],
-		[ SignAnalysis.szn, SignAnalysis.sn, SignAnalysis.szn, SignAnalysis.st, SignAnalysis.szn, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ],
-		[ SignAnalysis.szp, SignAnalysis.st, SignAnalysis.szp, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.szp, SignAnalysis.st, SignAnalysis.st ],
-		[ SignAnalysis.snp, SignAnalysis.st, SignAnalysis.snp, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.snp, SignAnalysis.st ],
-		[ SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ]
+		[ SignAnalysis.sb, SignAnalysis.st, SignAnalysis.sp, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.st ],
+		[ SignAnalysis.sb, SignAnalysis.sn, SignAnalysis.szn, SignAnalysis.st, SignAnalysis.szn, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ],
+		[ SignAnalysis.sb, SignAnalysis.st, SignAnalysis.szp, SignAnalysis.sp, SignAnalysis.st, SignAnalysis.szp, SignAnalysis.st, SignAnalysis.st ],
+		[ SignAnalysis.sb, SignAnalysis.st, SignAnalysis.snp, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.snp, SignAnalysis.st ],
+		[ SignAnalysis.sb, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ]
 	] 
 
 	SignAnalysisAbsFuncBinaryPlus(op1, op2) {
@@ -130,16 +130,31 @@ class SignAnalysisAbsFuncBinaryPlus extends SignAnalysisAbsFuncBase {
 }
 
 class SignAnalysisAbsFuncBinaryTimes extends SignAnalysisAbsFuncBase {
+
+	static sign_xfer_table = [
+		// [ sb,              sn,                    sz,           sp,             szn,            szp,              snp,              st ],
+		[ SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sz, SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb, SignAnalysis.sb], // sb
+		[ SignAnalysis.sb, SignAnalysis.sp, SignAnalysis.sz, SignAnalysis.sn, SignAnalysis.szp, SignAnalysis.szn, SignAnalysis.snp, SignAnalysis.st ], // sn
+		[ SignAnalysis.sz, SignAnalysis.sz, SignAnalysis.sz, SignAnalysis.sz, SignAnalysis.sz, SignAnalysis.sz, SignAnalysis.sz, SignAnalysis.sz ], // sz
+		[ SignAnalysis.sb, SignAnalysis.sn, SignAnalysis.sz, SignAnalysis.sp, SignAnalysis.szn, SignAnalysis.szp, SignAnalysis.snp, SignAnalysis.st ], // sp
+		[ SignAnalysis.sb, SignAnalysis.szp, SignAnalysis.sz, SignAnalysis.szn, SignAnalysis.szp, SignAnalysis.szn, SignAnalysis.st, SignAnalysis.st ], // szn
+		[ SignAnalysis.sb, SignAnalysis.szn, SignAnalysis.sz, SignAnalysis.szp, SignAnalysis.szn, SignAnalysis.szp, SignAnalysis.st, SignAnalysis.st ], // szp
+		[ SignAnalysis.sb, SignAnalysis.snp, SignAnalysis.sz, SignAnalysis.snp, SignAnalysis.st, SignAnalysis.st, SignAnalysis.snp, SignAnalysis.st ], // snp
+		[ SignAnalysis.sb, SignAnalysis.st, SignAnalysis.sz, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st, SignAnalysis.st ] // st
+	] 
+
 	def operand1, operand2;
+
 	SignAnalysisAbsFuncBinaryTimes(op1, op2) {
 		operand1 = op1;
 		operand2 = op2;
 	}
+
 	def eval(var_context) {
-		r1 = operand1.eval(var_context)
-		r2 = operand2.eval(var_context)
-		// TODO lookup result in transfer function table
-		return r1
+		println "BinaryTimes::eval($operand1,$operand2)"
+		def r1 = operand1.eval(var_context)
+		def r2 = operand2.eval(var_context)
+		return sign_xfer_table[r1][r2]
 	}
 }
 

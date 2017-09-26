@@ -14,6 +14,7 @@ public class AGraph {
 	
 	AGraph() {
 		edges = new HashSet<Edge>();
+		nodes = new HashMap<Object,Vertex>();
 	}
 
 	AGraph withNode(Vertex v) {
@@ -26,6 +27,10 @@ public class AGraph {
 
 	Set<Edge> edges() {
 		return edges;
+	}
+
+	Map<Object,Vertex> nodes() {
+		return nodes;
 	}
 }
 

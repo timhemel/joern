@@ -11,6 +11,7 @@ public class AVertex {
 	Object id;
 	Map<String,Object> properties;
 	Vertex vertex;
+	Graph graph;
 
 	AVertex() {
 		id = null;
@@ -26,8 +27,13 @@ public class AVertex {
 		return this;
 	}
 
-	AVertex inGraph(Graph g) {
-		vertex = g.addVertex();
+	AVertex inGraph(Graph graph) {
+		this.graph = graph;
+		return this;
+	}
+
+	AVertex build() {
+		vertex = graph.addVertex();
 		for(Object key: properties.keySet()) {
 			vertex.property((String)key, properties.get(key));
 		}

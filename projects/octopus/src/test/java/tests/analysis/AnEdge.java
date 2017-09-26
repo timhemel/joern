@@ -8,6 +8,7 @@ public class AnEdge {
 	String label;
 	Edge edge;
 	Vertex inV, outV;
+	Graph graph;
 
 	AnEdge() {
 	}
@@ -25,7 +26,12 @@ public class AnEdge {
 		return this;
 	}
 
-	AnEdge inGraph(Graph g) {
+	AnEdge inGraph(Graph graph) {
+		this.graph = graph;
+		return this;
+	}
+
+	AnEdge build() {
 		outV.addEdge(label,inV);
 		return this;
 	}

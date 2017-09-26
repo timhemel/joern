@@ -35,7 +35,7 @@ public class AnalysisTest {
 	public void testBuildVertexWithPropertyLists() {
 		AVertex vertex = new AVertex().withId(12)
 			.with("code",new ArrayList<String>(Arrays.asList("a = 1;","b=2;")));
-		assertEquals("a = 1;",vertex.get().value("code"));
+		assertEquals(Arrays.asList("a = 1;","b=2;"),vertex.get().value("code"));
 	}
 
 	@Test

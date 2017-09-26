@@ -32,7 +32,8 @@ public class AVertex {
 			int i = 0;
 			for(Object v: (List<?>) value) {
 				Map<String,Object> propertyValueMap = new HashMap<String,Object>();
-				propertyValueMap.put(String.valueOf(i),v);
+				propertyValueMap.put("id",String.valueOf(i));
+				propertyValueMap.put("value",v);
 				
 				list.add(propertyValueMap);
 				i++;
@@ -41,7 +42,8 @@ public class AVertex {
 		} else {
 			List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 			Map<String,Object> propertyValueMap = new HashMap<String,Object>();
-			propertyValueMap.put("1",properties.get(key));
+			propertyValueMap.put("id","0");
+			propertyValueMap.put("value",value);
 			list.add(propertyValueMap);
 			properties.put(key,list);
 		}

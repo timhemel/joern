@@ -16,8 +16,6 @@ public enum SignLattice implements Lattice<SignLattice> {
 	};
 
 	public SignLattice join(SignLattice other) {
-		System.out.println("SignLattice::join");
-		// return join_table[a.ordinal()][b.ordinal()];
 		return join_table[this.ordinal()][other.ordinal()];
 	}
 

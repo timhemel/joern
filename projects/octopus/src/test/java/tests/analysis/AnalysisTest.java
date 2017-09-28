@@ -82,7 +82,7 @@ public class AnalysisTest {
 	@Test
 	public void testBuildJoernASTExpressionStatement() {
 		Graph graph = TinkerGraph.open();
-		JoernASTBuilder b = new JoernASTBuilder(graph);
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
 		Vertex root = b.ExpressionStatement(
 				b.AssignmentExpression(
 					b.Identifier("x"),
@@ -95,7 +95,7 @@ public class AnalysisTest {
 	@Test
 	public void testTransferFunctionCFGEntry() {
 		Graph graph = TinkerGraph.open();
-		JoernASTBuilder b = new JoernASTBuilder(graph);
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
 		Vertex entry = b.CFGEntryNode();
 		TransferFunction f = TransferFunction.create(entry);
 		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();

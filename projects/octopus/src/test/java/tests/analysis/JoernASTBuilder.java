@@ -4,10 +4,10 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 
-public class AJoernAST {
+public class JoernASTBuilder {
 	Graph graph;
 
-	AJoernAST(Graph graph) {
+	JoernASTBuilder(Graph graph) {
 		this.graph = graph;
 	}
 

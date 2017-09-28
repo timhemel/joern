@@ -76,7 +76,7 @@ public class AnalysisTest {
 	@Test
 	public void testBuildJoernASTExpressionStatement() {
 		Graph graph = TinkerGraph.open();
-		AJoernAST b = new AJoernAST(graph);
+		JoernASTBuilder b = new JoernASTBuilder(graph);
 		Vertex root = b.ExpressionStatement(
 				b.AssignmentExpression(
 					b.Identifier("x"),

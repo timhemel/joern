@@ -1,6 +1,7 @@
-package octopus.analysis;
+package octopus.analysis.joern;
 
 import org.apache.tinkerpop.gremlin.structure.Vertex;
+import octopus.analysis.Lattice;
 
 public class JoernTransferFunctionCFGEntryNode extends JoernTransferFunction {
 	public JoernTransferFunctionCFGEntryNode(Vertex v) {

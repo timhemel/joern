@@ -1,4 +1,4 @@
-package octopus.analysis;
+package octopus.analysis.joern;
 
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import java.util.Map;
@@ -7,9 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import java.util.stream.Stream;
 
-import octopus.analysis.JoernTransferFunctionCFGEntryNode;
-import octopus.analysis.JoernTransferFunctionCFGExitNode;
-import octopus.analysis.JoernTransferFunctionCondition;
+import octopus.analysis.joern.*;
 
 public class JoernTransferFunctionFactory {
 

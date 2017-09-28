@@ -22,7 +22,7 @@ import octopus.analysis.SignLattice;
 import octopus.analysis.MapLattice;
 import static octopus.analysis.SignLattice.*;
 import octopus.analysis.TransferFunction;
-import octopus.analysis.JoernTransferFunctionFactory;
+import octopus.analysis.joern.JoernTransferFunctionFactory;
 
 public class AnalysisTest {
 

@@ -17,6 +17,12 @@ import java.util.Spliterators;
 import java.util.Spliterator;
 import java.util.Iterator;
 
+import octopus.analysis.Lattice;
+import octopus.analysis.SignLattice;
+import octopus.analysis.MapLattice;
+import static octopus.analysis.SignLattice.*;
+import octopus.analysis.TransferFunction;
+
 public class AnalysisTest {
 
 	@Test
@@ -84,6 +90,17 @@ public class AnalysisTest {
 				)
 			);
 		assertEquals("x",root.vertices(Direction.OUT).next().vertices(Direction.OUT).next().value("code"));
+	}
+
+	@Test
+	public void testTransferFunctionCFGEntry() {
+		Graph graph = TinkerGraph.open();
+		JoernASTBuilder b = new JoernASTBuilder(graph);
+		Vertex entry = b.CFGEntryNode();
+		TransferFunction f = TransferFunction.create(entry);
+		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
+		l.put("x", POS);
+		assertEquals(l, f.eval(l));
 	}
 
 }

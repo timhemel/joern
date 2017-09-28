@@ -44,4 +44,12 @@ public class JoernASTBuilder {
 		vertex.addEdge("IS_AST_PARENT",child);
 		return vertex;
 	}
+
+	public Vertex CFGEntryNode() {
+		Vertex vertex = graph.addVertex();
+		vertex.property("type","CFGEntryNode");
+		vertex.property("isCFGNode","True");
+		vertex.property("code","ENTRY");
+		return vertex;
+	}
 }

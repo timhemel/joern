@@ -45,11 +45,40 @@ public class JoernGraphBuilder {
 		return vertex;
 	}
 
+	Vertex RelationalExpression(Vertex expr1, String operator, Vertex expr2) {
+		Vertex vertex = graph.addVertex();
+		expr1.property("childNum","0");
+		expr2.property("childNum","1");
+		vertex.property("type", "RelationalExpression");
+		vertex.property("code", expr1.value("code") + " " + operator + " " + expr2.value("code"));
+		vertex.addEdge("IS_AST_PARENT",expr1);
+		vertex.addEdge("IS_AST_PARENT",expr2);
+		return vertex;
+	}
+
+	public Vertex Condition(Vertex expression) {
+		Vertex vertex = graph.addVertex();
+		expression.property("childNum","0");
+		vertex.property("type","Condition");
+		vertex.property("isCFGNode","True");
+		vertex.property("code",expression.value("code"));
+		vertex.addEdge("IS_AST_PARENT",expression);
+		return vertex;
+	}
+
 	public Vertex CFGEntryNode() {
 		Vertex vertex = graph.addVertex();
 		vertex.property("type","CFGEntryNode");
 		vertex.property("isCFGNode","True");
 		vertex.property("code","ENTRY");
+		return vertex;
+	}
+
+	public Vertex CFGExitNode() {
+		Vertex vertex = graph.addVertex();
+		vertex.property("type","CFGExitNode");
+		vertex.property("isCFGNode","True");
+		vertex.property("code","EXIT");
 		return vertex;
 	}
 }

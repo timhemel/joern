@@ -22,6 +22,8 @@ import octopus.analysis.SignLattice;
 import octopus.analysis.MapLattice;
 import static octopus.analysis.SignLattice.*;
 import octopus.analysis.TransferFunction;
+import octopus.analysis.Analyzer;
+import octopus.analysis.MFPAlgorithm;
 import octopus.analysis.joern.*;
 // import octopus.analysis.joern.JoernTransferFunctionFactory;
 
@@ -269,6 +271,22 @@ public class AnalysisTest {
 		JoernSignEvaluator e = new JoernSignEvaluator();
 		assertEquals(POS, f.eval(e,l));
 	}
+
+	@Test
+	public void testMFPAlgorithmEmptyCode() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex entry = b.CFGEntryNode();
+		Vertex exit = b.CFGExitNode();
+		Edge edge = b.connect("FLOWS_TO", entry, exit);
+		Analyzer analyzer = new JoernSignAnalyzer();
+		Iterator<Edge> edges = graph.edges(edge.id());
+		MFPAlgorithm mfp = new MFPAlgorithm(edges,analyzer);
+		mfp.run();
+		MapLattice<Lattice<SignLattice>> expected = new MapLattice<Lattice<SignLattice>>();
+		assertEquals(expected, analyzer.get(exit));
+	}
+
 
 
 

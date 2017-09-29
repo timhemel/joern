@@ -290,7 +290,7 @@ public class AnalysisTest {
 	}
 
 	@Test
-	public void testMFPAlgorithmAssignment() {
+	public void testMFPAlgorithmSingleAssignment() {
 		Graph graph = TinkerGraph.open();
 		JoernGraphBuilder b = new JoernGraphBuilder(graph);
 		Vertex entry = b.CFGEntryNode();
@@ -312,6 +312,46 @@ public class AnalysisTest {
 		expected.put("x",ZER);
 		// assertEquals(expected, analyzer.get(stat));
 		assertEquals(expected, analyzer.get(exit));
+	}
+
+	@Test
+	public void testMFPAlgorithmMultipleAssignments() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex entry = b.CFGEntryNode();
+		Vertex stat1 = b.ExpressionStatement(
+			b.AssignmentExpression(
+				b.Identifier("x"),b.PrimaryExpression("0")
+			)
+		);
+		Vertex stat2 = b.ExpressionStatement(
+			b.AssignmentExpression(
+				b.Identifier("y"),b.Identifier("x")
+			)
+		);
+		Vertex stat3 = b.ExpressionStatement(
+			b.AssignmentExpression(
+				b.Identifier("x"),b.PrimaryExpression("-10")
+			)
+		);
+		Vertex exit = b.CFGExitNode();
+		Edge edge1 = b.connect("FLOWS_TO", entry, stat1);
+		Edge edge2 = b.connect("FLOWS_TO", stat1, stat2);
+		Edge edge3 = b.connect("FLOWS_TO", stat2, stat3);
+		Edge edge4 = b.connect("FLOWS_TO", stat3, exit);
+		Analyzer analyzer = new JoernSignAnalyzer();
+		Set<Edge> edges = new HashSet<Edge>();
+		edges.add(edge1);
+		edges.add(edge2);
+		edges.add(edge3);
+		edges.add(edge4);
+		MFPAlgorithm mfp = new MFPAlgorithm(edges,analyzer);
+		mfp.run();
+		MapLattice<Lattice<SignLattice>> expectedAtExit = new MapLattice<Lattice<SignLattice>>();
+		expectedAtExit.put("x",NEG);
+		expectedAtExit.put("y",ZER);
+		// assertEquals(expected, analyzer.get(stat));
+		assertEquals(expectedAtExit, analyzer.get(exit));
 	}
 
 

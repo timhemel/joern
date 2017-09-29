@@ -47,32 +47,18 @@ public class MFPAlgorithm {
 		worklist.addAll(edges);
 		while (!worklist.empty()) {
 			Edge edge = worklist.pop();
-			Vertex computingVertex = getComputingVertex(edge); // n'
-			Vertex dependentVertex = getDependentVertex(edge); // n
+			Vertex computingVertex = getComputingVertex(edge);
+			Vertex dependentVertex = getDependentVertex(edge);
 			Lattice transValue = analyzer.trans(dependentVertex);
 			Lattice currentValue = analyzer.get(computingVertex);
 			Lattice joinValue = analyzer.join(transValue,currentValue);
-			System.out.println("depnode="+dependentVertex);
-			System.out.println("compnode="+computingVertex);
-			System.out.println("depvalue="+analyzer.get(dependentVertex));
-			System.out.println("transvalue="+transValue);
-			System.out.println("curvalue="+currentValue);
-			System.out.println("joinvalue="+joinValue);
-			if (joinValue.equals(currentValue)) {
-				System.out.println("(transvalue <= curvalue)");
-			} else {
-				System.out.println("!(transvalue <= curvalue)");
-			}
-			System.out.println("-------------");
 			if (!joinValue.equals(currentValue)) {
 				// i.e.  !(transValue <= currentValue)
 				analyzer.set(computingVertex, joinValue);
-				System.out.println("new compvalue="+analyzer.get(computingVertex));
 				Iterator<Edge> successorEdges = getSuccessorEdges(computingVertex);
 				while (successorEdges.hasNext()) {
 					Edge successorEdge = successorEdges.next();
-					System.out.println("Add edge to worklist: "+successorEdge);
-					worklist.push(edge);
+					worklist.push(successorEdge);
 				}
 			}
 		}

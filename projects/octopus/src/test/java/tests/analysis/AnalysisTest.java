@@ -95,6 +95,32 @@ public class AnalysisTest {
 	}
 
 	@Test
+	public void testBuildJoernCFG() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex stat1 = b.ExpressionStatement(
+				b.AssignmentExpression(
+					b.Identifier("x"),
+					b.PrimaryExpression("3")
+				)
+			);
+		Vertex stat2 = b.ExpressionStatement(
+				b.AssignmentExpression(
+					b.Identifier("y"),
+					b.Identifier("x")
+				)
+			);
+		Vertex entry = b.CFGEntryNode();
+		Vertex exit = b.CFGExitNode();
+		b.connect("FLOWS_TO", entry, stat1);
+		b.connect("FLOWS_TO", stat1, stat2);
+		b.connect("FLOWS_TO", stat2, exit);
+		assertEquals(1, toArrayList( stat1.vertices(Direction.OUT,"FLOWS_TO")).size());
+		assertEquals(stat2, stat1.vertices(Direction.OUT,"FLOWS_TO").next());
+	}
+
+
+	@Test
 	public void testTransferFunctionCFGEntry() {
 		Graph graph = TinkerGraph.open();
 		JoernGraphBuilder b = new JoernGraphBuilder(graph);

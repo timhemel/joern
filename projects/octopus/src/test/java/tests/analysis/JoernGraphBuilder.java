@@ -81,4 +81,9 @@ public class JoernGraphBuilder {
 		vertex.property("code","EXIT");
 		return vertex;
 	}
+
+	public Edge connect(String label, Vertex fromVertex, Vertex toVertex) {
+		Edge e = fromVertex.addEdge(label, toVertex);
+		return e;
+	}
 }

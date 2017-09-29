@@ -352,6 +352,10 @@ public class AnalysisTest {
 		expectedAtExit.put("y",ZER);
 		// assertEquals(expected, analyzer.get(stat));
 		assertEquals(expectedAtExit, analyzer.get(exit));
+		MapLattice<Lattice<SignLattice>> expectedAtStat3 = new MapLattice<Lattice<SignLattice>>();
+		expectedAtStat3.put("x",ZER);
+		expectedAtStat3.put("y",ZER);
+		assertEquals(expectedAtStat3, analyzer.get(stat3));
 	}
 
 

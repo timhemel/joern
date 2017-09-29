@@ -3,15 +3,9 @@ package octopus.analysis;
 
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
-public class TransferFunction {
+import octopus.analysis.Evaluator;
 
-	public static TransferFunction create(Vertex v) {
-		// strings in case stat?
-		return new TransferFunction(v);
-	}
-	public TransferFunction(Vertex v) {
-	}
-	public Lattice eval(Lattice v) {
-		return v;
-	}
+public abstract class TransferFunction {
+	public TransferFunction(Vertex v) { }
+	public abstract Lattice eval(Evaluator e,Lattice v);
 }

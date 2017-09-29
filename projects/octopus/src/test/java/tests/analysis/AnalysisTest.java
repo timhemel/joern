@@ -102,7 +102,8 @@ public class AnalysisTest {
 		TransferFunction f = JoernTransferFunctionFactory.create(entry);
 		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
 		l.put("x", POS);
-		assertEquals(l, f.eval(l));
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(l, f.eval(e,l));
 	}
 
 	@Test
@@ -113,7 +114,8 @@ public class AnalysisTest {
 		TransferFunction f = JoernTransferFunctionFactory.create(exit);
 		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
 		l.put("x", POS);
-		assertEquals(l, f.eval(l));
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(l, f.eval(e,l));
 	}
 
 	@Test
@@ -128,11 +130,12 @@ public class AnalysisTest {
 		TransferFunction f = JoernTransferFunctionFactory.create(cond);
 		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
 		l.put("x", POS);
-		assertEquals(l, f.eval(l));
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(l, f.eval(e,l));
 	}
 
 	@Test
-	public void testTransferFunctionAssignmentSameVariable() {
+	public void testTransferFunctionAssignmentToSameVariable() {
 		Graph graph = TinkerGraph.open();
 		JoernGraphBuilder b = new JoernGraphBuilder(graph);
 		Vertex stat = b.ExpressionStatement(
@@ -145,11 +148,12 @@ public class AnalysisTest {
 		expected.put("x", ZER);
 		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
 		l.put("x", POS);
-		assertEquals(expected, f.eval(l));
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(expected, f.eval(e,l));
 	}
 
 	@Test
-	public void testTransferFunctionAssignmentOtherVariable() {
+	public void testTransferFunctionAssignmentToOtherVariable() {
 		Graph graph = TinkerGraph.open();
 		JoernGraphBuilder b = new JoernGraphBuilder(graph);
 		Vertex stat = b.ExpressionStatement(
@@ -163,9 +167,40 @@ public class AnalysisTest {
 		expected.put("x", ZER);
 		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
 		l.put("z", POS);
-		assertEquals(expected, f.eval(l));
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(expected, f.eval(e,l));
 	}
 
+	@Test
+	public void testTransferFunctionAssignmentFromVariable() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex stat = b.ExpressionStatement(
+			b.AssignmentExpression(
+				b.Identifier("x"),b.Identifier("z")
+			)
+		);
+		TransferFunction f = JoernTransferFunctionFactory.create(stat);
+		MapLattice<Lattice<SignLattice>> expected = new MapLattice<Lattice<SignLattice>>();
+		expected.put("z", POS);
+		expected.put("x", POS);
+		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
+		l.put("z", POS);
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(expected, f.eval(e,l));
+	}
+
+	@Test
+	public void testAbstractionFunctionVariable() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex identifier = b.Identifier("x");
+		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
+		l.put("x",POS);
+		TransferFunction f = JoernTransferFunctionFactory.create(identifier);
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(POS, f.eval(e,l));
+	}
 
 
 }

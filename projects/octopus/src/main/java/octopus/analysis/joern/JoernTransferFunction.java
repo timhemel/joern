@@ -4,12 +4,13 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import octopus.analysis.Lattice;
 import octopus.analysis.TransferFunction;
+import octopus.analysis.Evaluator;
 
 import java.util.stream.StreamSupport;
 import java.util.Spliterators;
 import java.util.Spliterator;
 
-public class JoernTransferFunction extends TransferFunction {
+public abstract class JoernTransferFunction extends TransferFunction {
 	// base class
 	public JoernTransferFunction(Vertex v) {
 		super(v);
@@ -30,8 +31,6 @@ public class JoernTransferFunction extends TransferFunction {
 		return getChildWithProperty(v,"childNum",childNum);
 	}
 
-	public Lattice eval(Lattice v) {
-		return v;
-	}
+	public abstract Lattice eval(Evaluator e,Lattice analysis);
 }
 

@@ -2,18 +2,17 @@ package octopus.analysis.joern;
 
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import octopus.analysis.Lattice;
+import octopus.analysis.Evaluator;
+import octopus.analysis.joern.JoernEvaluator;
 
 public class JoernTransferFunctionPrimaryExpression extends JoernTransferFunction {
-	int value;
+	String value;
 	public JoernTransferFunctionPrimaryExpression(Vertex v) {
 		super(v);
-		// Joern does not store type information in the AST
-		// assume that we only work with integers
-		value = new Integer(v.value("code")).intValue();
+		value = v.value("code");
 	}
-	public Lattice eval(Lattice v) {
-		// return v.bottom();
-		return v;
+	public Lattice eval(Evaluator e, Lattice analysis) {
+		return ((JoernEvaluator)e).evalPrimaryExpression(value);
 	}
 }
 

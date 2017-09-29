@@ -22,4 +22,8 @@ public enum SignLattice implements Lattice<SignLattice> {
 	public boolean leq(SignLattice other) {
 		return this.join(other) == other;
 	}
+
+	public SignLattice bottom() {
+		return BOT;
+	}
 }

@@ -10,4 +10,6 @@ public abstract class JoernEvaluator<L extends Lattice> extends Evaluator<L> {
 	public abstract L evalAssignmentExpression(L analysis, String varname, Lattice value);
 	public abstract Lattice evalIdentifier(L analysis, String varname);
 	public abstract Lattice evalPrimaryExpression(String value);
+	public abstract Lattice evalAdditiveExpression(Lattice value1, Lattice value2);
+	public abstract Lattice evalMultiplicativeExpression(Lattice value1, Lattice value2);
 }

@@ -25,6 +25,28 @@ public class JoernGraphBuilder {
 		return vertex;
 	}
 
+	Vertex AdditiveExpression(Vertex child1, Vertex child2) {
+		Vertex vertex = graph.addVertex();
+		child1.property("childNum","0");
+		child2.property("childNum","1");
+		vertex.property("type","AdditiveExpression");
+		vertex.property("code",child1.value("code")+" + "+child2.value("code"));
+		vertex.addEdge("IS_AST_PARENT",child1);
+		vertex.addEdge("IS_AST_PARENT",child2);
+		return vertex;
+	}
+
+	Vertex MultiplicativeExpression(Vertex child1, Vertex child2) {
+		Vertex vertex = graph.addVertex();
+		child1.property("childNum","0");
+		child2.property("childNum","1");
+		vertex.property("type","MultiplicativeExpression");
+		vertex.property("code",child1.value("code")+" * "+child2.value("code"));
+		vertex.addEdge("IS_AST_PARENT",child1);
+		vertex.addEdge("IS_AST_PARENT",child2);
+		return vertex;
+	}
+
 	Vertex AssignmentExpression(Vertex lhs, Vertex rhs) {
 		Vertex vertex = graph.addVertex();
 		lhs.property("childNum","0");

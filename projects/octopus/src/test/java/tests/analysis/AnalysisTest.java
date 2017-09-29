@@ -228,5 +228,48 @@ public class AnalysisTest {
 		assertEquals(POS, f.eval(e,l));
 	}
 
+	@Test
+	public void testAbstractionFunctionPrimaryExpression() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex constant = b.PrimaryExpression("-4");
+		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
+		l.put("x",POS);
+		TransferFunction f = JoernTransferFunctionFactory.create(constant);
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(NEG, f.eval(e,l));
+	}
+
+	@Test
+	public void testAbstractionFunctionAdditiveExpression() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex expr = b.AdditiveExpression(
+				b.Identifier("x"),
+				b.PrimaryExpression("-4")
+			);
+		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
+		l.put("x",POS);
+		TransferFunction f = JoernTransferFunctionFactory.create(expr);
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(TOP, f.eval(e,l));
+	}
+
+	@Test
+	public void testAbstractionFunctionMultiplicativeExpression() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex expr = b.MultiplicativeExpression(
+				b.Identifier("x"),
+				b.PrimaryExpression("-4")
+			);
+		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
+		l.put("x",NEG);
+		TransferFunction f = JoernTransferFunctionFactory.create(expr);
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		assertEquals(POS, f.eval(e,l));
+	}
+
+
 
 }

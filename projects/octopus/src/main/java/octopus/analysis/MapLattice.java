@@ -22,7 +22,8 @@ public class MapLattice<T extends Lattice> extends HashMap<String,T> implements 
 	}
 
 	public boolean leq(MapLattice other) {
-		return this.join(other) == other;
+		return this.join(other).equals(other);
+		// return this.join(other) == other;
 	}
 
 	public MapLattice<T> bottom() {

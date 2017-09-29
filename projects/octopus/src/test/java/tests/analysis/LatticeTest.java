@@ -27,6 +27,14 @@ public class LatticeTest {
 	}
 
 	@Test
+	public void testJoinOnMapLatticeEmpty() {
+		MapLattice<Lattice<SignLattice>> m1 = new MapLattice<Lattice<SignLattice>>();
+		MapLattice<Lattice<SignLattice>> m2 = new MapLattice<Lattice<SignLattice>>();
+		MapLattice<Lattice<SignLattice>> m_expected = new MapLattice<Lattice<SignLattice>>();
+		assertEquals(m_expected, m1.join(m2));
+	}
+
+	@Test
 	public void testJoinOnMapLatticeDifferentVars() {
 		MapLattice<Lattice<SignLattice>> m1 = new MapLattice<Lattice<SignLattice>>();
 		MapLattice<Lattice<SignLattice>> m2 = new MapLattice<Lattice<SignLattice>>();
@@ -48,5 +56,14 @@ public class LatticeTest {
 		m_expected.put("x", NoP);
 		assertEquals(m_expected, m1.join(m2));
 	}
+
+	@Test
+	public void testLeqOnMapLatticeEmpty() {
+		MapLattice<Lattice<SignLattice>> m1 = new MapLattice<Lattice<SignLattice>>();
+		MapLattice<Lattice<SignLattice>> m2 = new MapLattice<Lattice<SignLattice>>();
+		MapLattice<Lattice<SignLattice>> m_expected = new MapLattice<Lattice<SignLattice>>();
+		assertTrue(m1.leq(m2));
+	}
+
 }
 

@@ -8,6 +8,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
+import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -280,10 +281,36 @@ public class AnalysisTest {
 		Vertex exit = b.CFGExitNode();
 		Edge edge = b.connect("FLOWS_TO", entry, exit);
 		Analyzer analyzer = new JoernSignAnalyzer();
-		Iterator<Edge> edges = graph.edges(edge.id());
+		Set<Edge> edges = new HashSet<Edge>();
+		edges.add(edge);
 		MFPAlgorithm mfp = new MFPAlgorithm(edges,analyzer);
 		mfp.run();
 		MapLattice<Lattice<SignLattice>> expected = new MapLattice<Lattice<SignLattice>>();
+		assertEquals(expected, analyzer.get(exit));
+	}
+
+	@Test
+	public void testMFPAlgorithmAssignment() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex entry = b.CFGEntryNode();
+		Vertex stat = b.ExpressionStatement(
+			b.AssignmentExpression(
+				b.Identifier("x"),b.PrimaryExpression("0")
+			)
+		);
+		Vertex exit = b.CFGExitNode();
+		Edge edge1 = b.connect("FLOWS_TO", entry, stat);
+		Edge edge2 = b.connect("FLOWS_TO", stat, exit);
+		Analyzer analyzer = new JoernSignAnalyzer();
+		Set<Edge> edges = new HashSet<Edge>();
+		edges.add(edge1);
+		edges.add(edge2);
+		MFPAlgorithm mfp = new MFPAlgorithm(edges,analyzer);
+		mfp.run();
+		MapLattice<Lattice<SignLattice>> expected = new MapLattice<Lattice<SignLattice>>();
+		expected.put("x",ZER);
+		// assertEquals(expected, analyzer.get(stat));
 		assertEquals(expected, analyzer.get(exit));
 	}
 

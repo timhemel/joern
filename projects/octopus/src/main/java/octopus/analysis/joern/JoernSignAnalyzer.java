@@ -12,9 +12,12 @@ import octopus.analysis.TransferFunction;
 
 public class JoernSignAnalyzer extends Analyzer {
 	HashMap<Vertex,TransferFunction> xferFunction;
+	JoernSignEvaluator evaluator;
+
 	public JoernSignAnalyzer() {
 		super();
 		xferFunction = new HashMap<Vertex,TransferFunction>();
+		evaluator = new JoernSignEvaluator();
 	}
 
 	public void addVertex(Vertex v) {
@@ -26,6 +29,16 @@ public class JoernSignAnalyzer extends Analyzer {
 
 	protected Lattice bottom() {
 		return new MapLattice<Lattice<SignLattice>>();
+	}
+
+	public Lattice join(Lattice a, Lattice b) {
+		return ((MapLattice<Lattice<SignLattice>>)a).join((MapLattice<Lattice<SignLattice>>)b);
+	}
+
+	public Lattice trans(Vertex v) {
+		TransferFunction f = xferFunction.get(v);
+		Lattice a = results.get(v);
+		return f.eval(evaluator,a);
 	}
 
 }

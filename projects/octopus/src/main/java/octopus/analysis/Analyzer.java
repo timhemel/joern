@@ -29,6 +29,14 @@ public abstract class Analyzer {
 		return results.get(v);
 	}
 
+	public void set(Vertex v, Lattice l) {
+		results.put(v,l);
+	}
+
 	protected abstract Lattice bottom();
+
+	public abstract Lattice join(Lattice a, Lattice b);
+
+	public abstract Lattice trans(Vertex v);
 }
 

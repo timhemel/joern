@@ -98,6 +98,31 @@ public class AnalysisTest {
 	}
 
 	@Test
+	public void testBuildJoernASTIdentifierDeclStatement() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex decl1 = b.IdentifierDeclStatement(
+			b.IdentifierDecl(
+				b.IdentifierDeclType("int"),
+				b.Identifier("x"),
+				b.AssignmentExpression(
+					b.Identifier("x"),b.PrimaryExpression("0")
+				)
+			)
+		);
+		Vertex decl2 = b.IdentifierDeclStatement(
+			b.IdentifierDecl(
+				b.IdentifierDeclType("int"),
+				b.Identifier("y")
+			)
+		);
+
+		assertEquals("int y ;",decl2.value("code"));
+		assertEquals("int x = 0 ;",decl1.value("code"));
+	}
+
+
+	@Test
 	public void testBuildJoernCFG() {
 		Graph graph = TinkerGraph.open();
 		JoernGraphBuilder b = new JoernGraphBuilder(graph);

@@ -21,14 +21,24 @@ public class JoernTransferFunctionFactory {
 			JoernTransferFunction xfer = ctor.newInstance(v);
 			return xfer;
 		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+			e.printStackTrace(System.out);
 			return null;
 		} catch (NoSuchMethodException e) {
+			System.out.println(e);
+			e.printStackTrace(System.out);
 			return null;
 		} catch (InstantiationException e) {
+			System.out.println(e);
+			e.printStackTrace(System.out);
 			return null;
 		} catch (IllegalAccessException e) {
+			System.out.println(e);
+			e.printStackTrace(System.out);
 			return null;
 		} catch (InvocationTargetException e) {
+			System.out.println(e);
+			e.printStackTrace(System.out);
 			return null;
 		}
 	}

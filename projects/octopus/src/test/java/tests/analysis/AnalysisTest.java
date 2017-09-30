@@ -246,6 +246,39 @@ public class AnalysisTest {
 	}
 
 	@Test
+	public void testTransferFunctionIdentifierDeclStatement() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex decl1 = b.IdentifierDeclStatement(
+			b.IdentifierDecl(
+				b.IdentifierDeclType("int"),
+				b.Identifier("x"),
+				b.AssignmentExpression(
+					b.Identifier("x"),b.PrimaryExpression("0")
+				)
+			)
+		);
+		Vertex decl2 = b.IdentifierDeclStatement(
+			b.IdentifierDecl(
+				b.IdentifierDeclType("int"),
+				b.Identifier("y")
+			)
+		);
+		MapLattice<Lattice<SignLattice>> l = new MapLattice<Lattice<SignLattice>>();
+		JoernSignEvaluator e = new JoernSignEvaluator();
+		MapLattice<Lattice<SignLattice>> expected1 = new MapLattice<Lattice<SignLattice>>();
+		expected1.put("x",ZER);
+		TransferFunction f1 = JoernTransferFunctionFactory.create(decl1);
+		assertNotNull(f1);
+		assertEquals(expected1, f1.eval(e,l));
+		MapLattice<Lattice<SignLattice>> expected2 = new MapLattice<Lattice<SignLattice>>();
+		expected2.put("y",TOP);
+		TransferFunction f2 = JoernTransferFunctionFactory.create(decl2);
+		assertEquals(expected2, f2.eval(e,l));
+	}
+
+
+	@Test
 	public void testAbstractionFunctionVariable() {
 		Graph graph = TinkerGraph.open();
 		JoernGraphBuilder b = new JoernGraphBuilder(graph);
@@ -384,6 +417,44 @@ public class AnalysisTest {
 		assertEquals(expectedAtStat3, analyzer.get(stat3));
 	}
 
+
+	@Test
+	public void testMFPAlgorithmDeclaration() {
+		Graph graph = TinkerGraph.open();
+		JoernGraphBuilder b = new JoernGraphBuilder(graph);
+		Vertex entry = b.CFGEntryNode();
+		Vertex decl1 = b.IdentifierDeclStatement(
+			b.IdentifierDecl(
+				b.IdentifierDeclType("int"),
+				b.Identifier("x"),
+				b.AssignmentExpression(
+					b.Identifier("x"),b.PrimaryExpression("0")
+				)
+			)
+		);
+		Vertex decl2 = b.IdentifierDeclStatement(
+			b.IdentifierDecl(
+				b.IdentifierDeclType("int"),
+				b.Identifier("y")
+			)
+		);
+
+		Vertex exit = b.CFGExitNode();
+		Edge edge1 = b.connect("FLOWS_TO", entry, decl1);
+		Edge edge2 = b.connect("FLOWS_TO", decl1, decl2);
+		Edge edge3 = b.connect("FLOWS_TO", decl2, exit);
+		Analyzer analyzer = new JoernSignAnalyzer();
+		Set<Edge> edges = new HashSet<Edge>();
+		edges.add(edge1);
+		edges.add(edge2);
+		edges.add(edge3);
+		MFPAlgorithm mfp = new MFPAlgorithm(edges,analyzer);
+		mfp.run();
+		MapLattice<Lattice<SignLattice>> expectedAtExit = new MapLattice<Lattice<SignLattice>>();
+		expectedAtExit.put("x",ZER);
+		expectedAtExit.put("y",TOP);
+		assertEquals(expectedAtExit, analyzer.get(exit));
+	}
 
 
 

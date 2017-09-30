@@ -9,6 +9,7 @@ import octopus.analysis.Evaluator;
 import java.util.stream.StreamSupport;
 import java.util.Spliterators;
 import java.util.Spliterator;
+import java.util.Optional;
 
 public abstract class JoernTransferFunction extends TransferFunction {
 	// base class
@@ -17,14 +18,19 @@ public abstract class JoernTransferFunction extends TransferFunction {
 	}
 
 	public static Vertex getChildWithProperty(Vertex v, String key, String value) {
-		Vertex child =
+		Optional<Vertex> child =
 			StreamSupport.stream(
 				Spliterators.spliteratorUnknownSize(
 					v.vertices(Direction.OUT,"IS_AST_PARENT"),
 					Spliterator.ORDERED),
 				false)
-			.filter(x -> x.value(key) == value).findFirst().get();
-		return child;
+			.filter(x -> x.value(key) == value).findFirst();
+		
+		if (child.isPresent()) {
+			return child.get();
+		} else {
+			return null;
+		}
 	}
 
 	public static Vertex getChildWithNumber(Vertex v, String childNum) {

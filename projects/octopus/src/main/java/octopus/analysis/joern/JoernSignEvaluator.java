@@ -16,10 +16,22 @@ public class JoernSignEvaluator extends JoernEvaluator<MapLattice<Lattice<SignLa
 	public MapLattice<Lattice<SignLattice>> evalCondition(MapLattice<Lattice<SignLattice>> analysis) {
 		return analysis;
 	}
+
 	public MapLattice<Lattice<SignLattice>> evalAssignmentExpression(MapLattice<Lattice<SignLattice>> analysis, String varname, Lattice value) {
 		MapLattice<Lattice<SignLattice>> newAnalysis = new MapLattice<Lattice<SignLattice>>();
 		newAnalysis.putAll(analysis);
 		newAnalysis.put(varname,value);
+		return newAnalysis;
+	}
+
+	public MapLattice<Lattice<SignLattice>> evalIdentifierDecl(MapLattice<Lattice<SignLattice>> analysis, String varname, MapLattice<Lattice<SignLattice>>  assignment) {
+		return assignment;
+	}
+
+	public MapLattice<Lattice<SignLattice>> evalIdentifierDecl(MapLattice<Lattice<SignLattice>> analysis, String varname) {
+		MapLattice<Lattice<SignLattice>> newAnalysis = new MapLattice<Lattice<SignLattice>>();
+		newAnalysis.putAll(analysis);
+		newAnalysis.put(varname,TOP); // assumes that var is never re-declared
 		return newAnalysis;
 	}
 

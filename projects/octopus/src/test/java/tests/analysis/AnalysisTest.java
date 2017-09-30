@@ -119,6 +119,7 @@ public class AnalysisTest {
 
 		assertEquals("int y ;",decl2.value("code"));
 		assertEquals("int x = 0 ;",decl1.value("code"));
+		assertEquals("IdentifierDeclStatement",decl1.value("type"));
 	}
 
 

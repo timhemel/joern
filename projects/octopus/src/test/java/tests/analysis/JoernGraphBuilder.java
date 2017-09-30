@@ -105,7 +105,7 @@ public class JoernGraphBuilder {
 	}
 	public Vertex IdentifierDecl(Vertex vartype, Vertex varname, Vertex assignment) {
 		Vertex vertex = graph.addVertex();
-		vertex.property("type","IdentifierDeclStatement");
+		vertex.property("type","IdentifierDecl");
 		addChild("IS_AST_PARENT",vertex,vartype,"0");
 		addChild("IS_AST_PARENT",vertex,varname,"1");
 		String declCode;
@@ -124,7 +124,7 @@ public class JoernGraphBuilder {
 	}
 	public Vertex IdentifierDeclStatement(Vertex decl) {
 		Vertex vertex = graph.addVertex();
-		vertex.property("type","IdentifierDecl");
+		vertex.property("type","IdentifierDeclStatement");
 		vertex.property("isCFGNode","True");
 		decl.property("childNum","0");
 		vertex.addEdge("IS_AST_PARENT",decl);

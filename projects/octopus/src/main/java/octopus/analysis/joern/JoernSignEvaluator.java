@@ -40,8 +40,9 @@ public class JoernSignEvaluator extends JoernEvaluator<MapLattice<Lattice<SignLa
 	}
 
 	public Lattice<SignLattice> evalPrimaryExpression(String value) {
-		// Joern does not store type information in the AST
-		// assume that we only work with integers
+		// Joern stores type information in the AST, but only at
+		// declarations.
+		// For simplicity, assume that we only work with integers
 		int v = new Integer(value).intValue();
 		if (v < 0) return NEG;
 		if (v > 0) return POS;
